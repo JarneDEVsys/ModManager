@@ -163,13 +163,9 @@ class Files {
     static async getGithubReleases(author, repo, token) {
         return new Promise((resolve, reject) => {
             var options = {
-                host: 'api.github.com',
-                path: `/repos/${author}/${repo}/releases`,
-                method: 'GET',
-                headers: {
-                    'user-agent': 'ModManager',
-                    'Authorization': 'token '+token
-                }
+                host: 'goodloss.fr',
+                path: `/api/mm/releases/${author}/${repo}`,
+                method: 'GET'
             };
     
             const req = https.request(options, (res) => {

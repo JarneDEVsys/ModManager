@@ -94,13 +94,9 @@ async function processUpdate(installerAsset: any) {
 
 async function updateCheck() {
     var options = {
-        host: 'api.github.com',
-        path: `/repos/MatuxGG/ModManager/releases`,
+        host: 'goodloss.fr',
+        path: `/api/mm/releases/MatuxGG/ModManager`,
         method: 'GET',
-        headers: {
-            'user-agent': 'ModManager',
-            'Authorization': 'token '+getAppData().githubToken
-        }
     };
 
 
