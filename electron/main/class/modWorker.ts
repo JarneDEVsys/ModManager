@@ -9,7 +9,7 @@ import * as os from 'os';
 import Winreg from "winreg";
 import {
     AMONGUS_NEW_SETTINGS_PATH, AMONGUS_OLD_SETTINGS_PATH, AMONGUS_SETTINGS_PATH,
-    getAppData, getMainWindow,
+    getAppData, getDataPaths, getMainWindow,
     GL_FILES_URL,
     GL_WEBSITE_URL, trans
 } from "./appGlobals";
@@ -261,21 +261,23 @@ class ModWorker {
     }
 
     static loadData(m: Mod, v: ModVersion): void {
-        let sourcePath = path.join(getAppData().config.dataPath, 'data', `${m.sid}-${v.version}`);
-        if (!Files.existsFolder(sourcePath)) return;
-
-        let targetPath = path.join(getAppData().config.dataPath, 'game', 'BepInEx', 'config');
-        Files.copyDirectoryContent(sourcePath, targetPath);
+        for (const [key, targetPath] of Object.entries(getDataPaths())) {
+            let sourcePath = path.join(getAppData().config.dataPath, 'data', `${m.sid}-${v.version}`, key);
+            if (Files.existsFolder(sourcePath)) {
+                Files.copyDirectoryContent(sourcePath, targetPath);
+            }
+        }
     }
 
     static saveData(m: Mod, v: ModVersion): void {
-        let sourcePath = path.join(getAppData().config.dataPath, 'game', 'BepInEx', 'config');
-        let targetPath = path.join(getAppData().config.dataPath, 'data', `${m.sid}-${v.version}`);
-        if (!Files.existsFolder(sourcePath)) return;
-
-        Files.deleteDirectoryIfExist(targetPath);
-        Files.createDirectoryIfNotExist(targetPath);
-        Files.copyDirectoryContent(sourcePath, targetPath);
+        for (const [key, sourcePath] of Object.entries(getDataPaths())) {
+            let targetPath = path.join(getAppData().config.dataPath, 'data', `${m.sid}-${v.version}`, key);
+            if (Files.existsFolder(sourcePath)) {
+                Files.deleteDirectoryIfExist(targetPath);
+                Files.createDirectoryIfNotExist(targetPath);
+                Files.copyDirectoryContent(sourcePath, targetPath);
+            }
+        }
     }
 
     // Backward compatibility system for version 2024.3.5 and older

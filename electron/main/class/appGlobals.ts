@@ -108,3 +108,10 @@ export const trans = (text: string, ...values: any[]) => {
 export const setTranslations = (newTrans) => {
     translations = newTrans;
 }
+
+export const getDataPaths = () => {
+    return {
+        'config': path.join(getAppData().config.dataPath, 'game', 'BepInEx', 'config'),
+        'TheOtherHats': path.join(getAppData().config.dataPath, 'game', 'TheOtherHats')
+    };
+}

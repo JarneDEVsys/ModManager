@@ -1,13 +1,13 @@
 import { resolve } from "dns";
 import {app, Notification} from "electron";
-import {getAppData, getMainWindow, trans, UPDATE_APP_DATA_INTERVAL} from "./appGlobals";
+import {getAppData, getMainWindow, GL_API_URL, trans, UPDATE_APP_DATA_INTERVAL} from "./appGlobals";
 import https from "https";
 export let isConnected = false;
 let firstConnection = true;
 
 
 function liveCheck() {
-    https.get('https://www.google.com', (res) => {
+    https.get(GL_API_URL+'/mm/status', (res) => {
         if (res.statusCode === 200) {
             if (isConnected || firstConnection) {
             } else {
