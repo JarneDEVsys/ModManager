@@ -1,7 +1,7 @@
 import { resolve } from "dns";
 import {app, Notification} from "electron";
 import {getAppData, getMainWindow, GL_API_URL, trans, UPDATE_APP_DATA_INTERVAL} from "./appGlobals";
-import https from "https";
+import https from "http";
 export let isConnected = false;
 let firstConnection = true;
 

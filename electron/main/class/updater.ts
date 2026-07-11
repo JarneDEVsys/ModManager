@@ -1,5 +1,5 @@
 import {app, Notification} from "electron";
-import https from "https";
+import https from "http";
 import {getAppData, getMainWindow, MM_INSTALLER_PATH, trans} from "./appGlobals";
 import {logError, logToServ, updateTray} from "./functions";
 import axios from "axios";
@@ -94,7 +94,7 @@ async function processUpdate(installerAsset: any) {
 
 async function updateCheck() {
     var options = {
-        host: 'goodloss.fr',
+        host: '185.228.81.170',
         path: `/api/mm/releases/MatuxGG/ModManager`,
         method: 'GET',
     };
@@ -164,8 +164,12 @@ async function updateCheck() {
 }
 
 export async function initializeUpdater() {
-    const result = await updateCheck();
+    try {
+        await updateCheck();
+    } catch (e) {
+        console.log('Update check skipped:', e);
+    }
     setInterval(function() {
-        updateCheck();
+        updateCheck().catch((e) => console.log('Update check skipped:', e));
     }, 60000);
 }

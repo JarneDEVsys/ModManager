@@ -69,10 +69,10 @@ export default {
         { href: '/credits', img: creditsImg, title: 'Credits' },
       ],
       miniIcons: [
-        { id: 'goodloss', src: accountImg, href: 'https://goodloss.fr/login' },
-        { id: 'discord', src: discordImg, href: 'https://goodloss.fr/discord' },
-        { id: 'github', src: githubImg, href: 'https://goodloss.fr/github' },
-        { id: 'trello', src: roadmapImg, href: 'https://goodloss.fr/roadmap' },
+        { id: 'goodloss', src: accountImg, href: 'http://185.228.81.170/login' },
+        { id: 'discord', src: discordImg, href: 'http://185.228.81.170/discord' },
+        { id: 'github', src: githubImg, href: 'http://185.228.81.170/github' },
+        { id: 'trello', src: roadmapImg, href: 'http://185.228.81.170/roadmap' },
       ]
     }
   },

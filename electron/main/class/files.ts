@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import https from 'https';
+import https from 'http';
 import {logError} from "./functions";
 
 class Files {
@@ -163,7 +163,7 @@ class Files {
     static async getGithubReleases(author, repo, token) {
         return new Promise((resolve, reject) => {
             var options = {
-                host: 'goodloss.fr',
+                host: '185.228.81.170',
                 path: `/api/mm/releases/${author}/${repo}`,
                 method: 'GET'
             };

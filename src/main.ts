@@ -23,7 +23,7 @@ const loadLocaleMessages = async (locale: string) => {
 
     const fetchTranslations: any = async () => {
         try {
-            const response = await axios.get(`https://goodloss.fr/api/trans/${locale}`);
+            const response = await axios.get(`http://185.228.81.170/api/trans/${locale}`);
             const messages = response.data.reduce((acc: any, item: any) => {
                 acc[item.original] = item.translation;
                 return acc;
@@ -55,7 +55,7 @@ const loadAllTranslations = async () => {
 
     const fetchTranslations: any = async () => {
         try {
-            const response = await axios.get('https://goodloss.fr/api/trans');
+            const response = await axios.get('http://185.228.81.170/api/trans');
             const languages = response.data;
 
             const loadTranslationsPromises = languages.map((lang: any) => loadLocaleMessages(lang.code.toLowerCase()));

@@ -15,9 +15,9 @@ let MM_ICON_PATH = null;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const GL_WEBSITE_URL = "https://goodloss.fr";
-export const GL_FILES_URL = "https://goodloss.fr/files";
-export const GL_API_URL = "https://goodloss.fr/api";
+export const GL_WEBSITE_URL = "http://185.228.81.170";
+export const GL_FILES_URL = "http://185.228.81.170/files";
+export const GL_API_URL = "http://185.228.81.170/api";
 export const MM_CONFIG_PATH = path.join(process.env.APPDATA, 'ModManager7', 'config7.json');
 export const MM_LOG_PATH = path.join(process.env.APPDATA, 'ModManager7', 'log.txt');
 export const MM_INSTALLER_PATH = path.join(process.env.APPDATA, 'ModManager7', 'installer.exe');
