@@ -1,7 +1,8 @@
 <p align="center">
-<a href="https://github.com/JarneDEVsys/ModManager/releases">
-  <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/JarneDEVsys/ModManager/total?label=GitHub%20downloads">
-</a>	<a href="https://www.curseforge.com/among-us/all-mods/mod-manager"><img alt="Curseforge Downloads" src="https://cf.way2muchnoise.eu/full_494578_downloads.svg"></a>
+<a href="https://github.com/JarneDEVsys/ModManager/releases/tag/Release">
+  <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/JarneDEVsys/ModManager/Release/total?label=GitHub%20downloads">
+</a>
+  <a href="https://www.curseforge.com/among-us/all-mods/mod-manager"><img alt="Curseforge Downloads" src="https://cf.way2muchnoise.eu/full_494578_downloads.svg"></a>
 </p>
 
 # Mod Manager
