@@ -29,14 +29,40 @@ class Files {
         return fs.existsSync(dir);
     }
 
-    static deleteDirectoryIfExist(dir) {
-        if (!fs.existsSync(dir)) return;
-        fs.rmSync(dir, { recursive: true });
+static deleteDirectoryIfExist(dir) {
+    if (!fs.existsSync(dir)) return;
+    const maxRetries = 5;
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            fs.rmSync(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
+            return;
+        } catch (error: any) {
+            if ((error.code === 'EBUSY' || error.code === 'EPERM' || error.code === 'ENOTEMPTY') && i < maxRetries - 1) {
+                const waitTill = Date.now() + 300;
+                while (Date.now() < waitTill) { /* busy-wait briefly */ }
+                continue;
+            }
+            throw error;
+        }
     }
+}
 
     static moveDirectory(dirSource, dirDest) {
         if (!fs.existsSync(dirSource)) return;
-        fs.renameSync(dirSource, dirDest);
+        try {
+            fs.renameSync(dirSource, dirDest);
+        } catch (error: any) {
+            if (error.code === 'EPERM' || error.code === 'EXDEV' || error.code === 'ENOTEMPTY') {
+                // Fallback: copy then remove, more reliable on Windows when a handle is still held
+                if (fs.existsSync(dirDest)) {
+                    fs.rmSync(dirDest, { recursive: true, force: true });
+                }
+                fs.cpSync(dirSource, dirDest, { recursive: true });
+                fs.rmSync(dirSource, { recursive: true, force: true });
+            } else {
+                throw error;
+            }
+        }
     }
 
     static copyFile(source, target) {

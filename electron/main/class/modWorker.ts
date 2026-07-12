@@ -30,11 +30,23 @@ class ModWorker {
         const tempPath = path.join(getAppData().config.dataPath, 'temp', `client-${gameVersion}.zip`);
         const clientPath = path.join(getAppData().config.dataPath, 'clients', gameVersion);
 
-        const response = await axios({
-            method: 'get',
-            url: url,
-            responseType: 'stream'
-        });
+        let response;
+        try {
+            response = await axios({
+                method: 'get',
+                url: url,
+                responseType: 'stream'
+            });
+        } catch (error: any) {
+            // Duidelijke fout tonen i.p.v. stil laten falen (bv. bij 404 op een verhuisde/verwijderde client-zip)
+            const status = error?.response?.status;
+            logError(`downloadClient: kon ${url} niet downloaden (status ${status ?? 'onbekend'})`, error?.message);
+            event.sender.send('createPopin',
+                `<div class='w-64'><p>` + trans('Failed to download game client $ (server error).', gameVersion) + `</p></div>`,
+                downloadId, "bg-red-700");
+            event.sender.send('removePopin', downloadId);
+            throw error;
+        }
 
         const totalLength = response.headers['content-length'];
         let progress = 0;
@@ -116,11 +128,31 @@ class ModWorker {
             });
         }
 
-        const response = await axios({
-            method: 'get',
-            url: fileUrl!,
-            responseType: 'stream'
-        });
+        if (!fileUrl) {
+            logError(`downloadMod: geen bruikbare download-asset gevonden voor ${mod.sid} ${version.version}`);
+            event.sender.send('createPopin',
+                `<div class='w-64'><p>` + trans('No downloadable file found for $.', mod.name) + `</p></div>`,
+                downloadId, "bg-red-700");
+            event.sender.send('removePopin', downloadId);
+            throw new Error(`No download asset for ${mod.sid} ${version.version}`);
+        }
+
+        let response;
+        try {
+            response = await axios({
+                method: 'get',
+                url: fileUrl!,
+                responseType: 'stream'
+            });
+        } catch (error: any) {
+            const status = error?.response?.status;
+            logError(`downloadMod: kon ${fileUrl} niet downloaden (status ${status ?? 'onbekend'})`, error?.message);
+            event.sender.send('createPopin',
+                `<div class='w-64'><p>` + trans('Failed to download $ (server error).', mod.name) + `</p></div>`,
+                downloadId, "bg-red-700");
+            event.sender.send('removePopin', downloadId);
+            throw error;
+        }
 
         const totalLength = response.headers['content-length'];
         let progress = 0;
@@ -229,7 +261,16 @@ class ModWorker {
             }
         }
 
-        await Promise.all(promises);
+        try {
+            await Promise.all(promises);
+        } catch (error: any) {
+            logError(`startMod: kon bestanden niet samenvoegen in ${gamePath} (mist mogelijk de client of mod-map)`, error?.message);
+            event.sender.send('updatePopin',
+                `<div class='w-64'><p>` + trans('$ could not start: game files are missing or incomplete.', mod.name) + `</p></div>`,
+                downloadId, "bg-red-700");
+            event.sender.send('removePopin', downloadId);
+            return;
+        }
 
         const amongUsPath = path.join(gamePath, 'Among Us.exe');
         this.loadGameSettings(version.version);
@@ -429,27 +470,42 @@ class ModWorker {
             key: '\\SOFTWARE\\03ceac78-9166-585d-b33a-90982f435933'
         });
         regKey.get('InstallLocation', (err: any, item: any) => {
-            if (err) {
-                logError("Erreur lors de la lecture de la clé de registre:", err);
-            } else if (item) {
-                child = spawn(path.join(item.value, "Better-CrewLink.exe"), {});
-
-                if (child.pid) {
-                    getAppData().startedMod = [mod, null];
-                    event.sender.send('updateStartedMod', [mod, null]);
-                    updateTray();
-                    event.sender.send('updatePopin', `<div class='w-64'><p>`+trans('$ started!', mod.name)+`</p></div>`, downloadId, "bg-green-700");
-                    event.sender.send('removePopin', downloadId);
-                }
-
-                child.on('close', () => {
-                    getAppData().startedMod = false;
-                    event.sender.send('updateStartedMod', false);
-                    updateTray();
-                });
-            } else {
-                console.log(null);
+            if (err || !item || !item.value) {
+                // Voorheen: alleen console.log(null) -> de "Starting..."-melding bleef eeuwig hangen
+                // en er gebeurde verder niets. Nu: duidelijke foutmelding + popin opruimen.
+                logError("startBcl: registersleutel InstallLocation niet gevonden of leeg. Is Better Crewlink wel (nog) geïnstalleerd?", err);
+                event.sender.send('updatePopin',
+                    `<div class='w-64'><p>` + trans('Better Crewlink is not properly installed. Try reinstalling it.') + `</p></div>`,
+                    downloadId, "bg-red-700");
+                event.sender.send('removePopin', downloadId);
+                return;
             }
+
+            const exePath = path.join(item.value, "Better-CrewLink.exe");
+            if (!Files.existsFolder(exePath)) {
+                logError(`startBcl: Better-CrewLink.exe niet gevonden op ${exePath}`);
+                event.sender.send('updatePopin',
+                    `<div class='w-64'><p>` + trans('Better Crewlink executable not found. Try reinstalling it.') + `</p></div>`,
+                    downloadId, "bg-red-700");
+                event.sender.send('removePopin', downloadId);
+                return;
+            }
+
+            child = spawn(exePath, {});
+
+            if (child.pid) {
+                getAppData().startedMod = [mod, null];
+                event.sender.send('updateStartedMod', [mod, null]);
+                updateTray();
+                event.sender.send('updatePopin', `<div class='w-64'><p>`+trans('$ started!', mod.name)+`</p></div>`, downloadId, "bg-green-700");
+                event.sender.send('removePopin', downloadId);
+            }
+
+            child.on('close', () => {
+                getAppData().startedMod = false;
+                event.sender.send('updateStartedMod', false);
+                updateTray();
+            });
         });
     }
 
