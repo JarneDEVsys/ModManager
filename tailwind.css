@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.menu-left-shadow {
+    box-shadow: -5px 0 0 0 orange;
+    text-shadow: 1px 0 0 currentColor;
+}
+
+.selectbox {
+    @apply bg-gray-300 dark:bg-gray-700 p-2 rounded text-sm;
+}
+
+.button {
+    @apply bg-gray-300 dark:bg-gray-700 p-2 rounded text-sm;
+}
+
+.searchbox {
+    @apply bg-gray-300 dark:bg-gray-700 p-2 rounded text-sm;
+}
+
+.input {
+    @apply bg-gray-300 dark:bg-gray-700 p-2 rounded text-sm;
+}
+
+.image-title {
+    @apply brightness-0 dark:brightness-100 w-12 h-12;
+}
+
+.image-icon {
+    @apply brightness-0 dark:brightness-100 h-5 w-5;
+}
+
+.title {
+    @apply text-xl font-bold tracking-widest;
+}
+
+.title2 {
+    @apply text-sm font-bold tracking-wider underline underline-offset-8 py-4 cursor-default;
+}
+
+.link {
+    @apply text-blue-400 hover:underline;
+}
+
+.downloader-line {
+    @apply p-2 border-white border rounded cursor-pointer;
+}
+
+.online {
+    @apply bg-green-500 dark:bg-green-700;
+}
+
+.offline {
+    @apply bg-red-500 dark:bg-red-800;
+}
