@@ -13,7 +13,7 @@ Support us: https://ko-fi.com/jarnemm
 
 ## How to install?
 
-1. Download the latest version available [here](https://goodloss.fr/latest).
+1. Download the latest version available [here](https://github.com/JarneDEVsys/ModManager/releases).
 
 3. Launch the installer and choose a location for the software. (You should not select your Among Us directory!)
 
