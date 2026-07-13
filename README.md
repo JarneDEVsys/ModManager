@@ -44,6 +44,7 @@ Publish a release in a public GitHub repository for your mod. In this release, y
 
 [BepInEx](https://github.com/NuclearPowered/BepInEx) - The main dependency of every mod\
 [Reactor](https://github.com/NuclearPowered/Reactor) - The most used modding API for Among Us
+[MatuxGG](https://github.com/MatuxGG) - Original Creator of ModManager7
 
 Thanks to every mod creator. Go check their respective GitHub repositories directly in Mod Manager!
 
